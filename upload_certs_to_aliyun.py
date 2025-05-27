@@ -40,6 +40,26 @@ def upload_certificate(client, domain_name, cert_path, key_path):
     response = client.do_action_with_exception(request)
     print(str(response, encoding='utf-8'))
 
+def update_unicloud_cert1(cert_content, key_content):
+    # 更新unicloud cdn域名
+    domain1="cdn.niuwei1688.com"
+    try:
+        print(f"Updating UniCloud cert_content for: {cert_content}")
+        print(f"Updating UniCloud key_content for: {key_content}")
+        return {"success": True, "domain": domain1}  # 模拟成功返回
+    except Exception as e:
+        return {"error": str(e), "domain": domain1}
+
+def update_unicloud_cert2(cert_content, key_content):
+    # 更新unicloud cdn域名
+    domain2="cdn1.niuwei1688.com"
+    try:
+        print(f"Updating UniCloud cert_content for: {cert_content}")
+        print(f"Updating UniCloud key_content for: {key_content}")
+        return {"success": True, "domain": domain2}  # 模拟成功返回
+    except Exception as e:
+        return {"error": str(e), "domain": domain2}
+
 def main():
     access_key_id = get_env_var('ALIYUN_ACCESS_KEY_ID')
     access_key_secret = get_env_var('ALIYUN_ACCESS_KEY_SECRET')
@@ -52,6 +72,10 @@ def main():
         cert_path = f'~/certs/{domain}/fullchain.pem'
         key_path = f'~/certs/{domain}/privkey.pem'
         upload_certificate(client, cdn_domain, cert_path, key_path)
+    
+     # 循环结束后执行额外逻辑
+    # update_unicloud_cert1(cert_path,key_path)
+    # update_unicloud_cert2(cert_path,key_path)
 
 if __name__ == "__main__":
     main()

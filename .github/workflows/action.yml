@@ -36,6 +36,41 @@ jobs:
                     mkdir -p ~/certs/${domain}
                   done
 
+            - name: Test API with Python
+              run: |
+                  cat << 'EOF' > test_api.py
+                  import requests
+                  import os
+                  def test_connection():
+                    url = "https://env-00jxgwsep3px.dev-hz.cloudbasefunction.cn/updateCert/updateAliyCert"
+                    # headers = {
+                    #     "Authorization": f"Bearer {os.getenv('API_KEY')}",
+                    #     "Accept": "application/json"
+                    # }
+
+                    params = {
+                        "cert_content": "证书内容",  # 证书内容
+                        "api_key": os.getenv("API_KEY"),  # 从环境变量读取
+                        "key_content": "秘钥私匙内容"       # 私匙内容
+                    }
+
+                    try:
+                        response = requests.get(url, params=params, timeout=10)
+                        response.raise_for_status()  # 非2xx状态码抛出异常
+                        print(f"✅ 连接成功！状态码: {response.status_code}")
+                        print(response.json())
+                    except Exception as e:
+                        print(f"❌ 连接失败: {str(e)}")
+                        raise  # 使步骤失败
+
+                    if __name__ == "__main__":
+                        test_connection()
+                    EOF
+
+                    python test_api.py
+              env:
+                  API_KEY: ${{ secrets.ALIYUN_ACCESS_KEY_ID }}
+
             - name: Obtain SSL Certificates
               env:
                   DOMAINS: ${{ secrets.DOMAINS }}
