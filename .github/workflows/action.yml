@@ -41,12 +41,15 @@ jobs:
                   cat << 'EOF' > test_api.py
                   import requests
                   import os
+
                   def test_connection():
+                    print("::group::调试信息")  # GitHub Actions分组日志
                     url = "https://env-00jxgwsep3px.dev-hz.cloudbasefunction.cn/updateCert/updateAliyCert"
                     headers = {
                     #   "Authorization": f"Bearer {os.getenv('API_KEY')}",
-                        "Accept": "application/json",
-                        "User-Agent": "GitHub-Actions"
+                        "Accept": "*/*",
+                        "User-Agent": "GitHub-Actions",
+                        "Content-Type": "mutipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"
                     }
 
                     params = {
@@ -63,11 +66,17 @@ jobs:
                     except Exception as e:
                         print(f"连接失败: {str(e)}")
                         raise  # 使步骤失败
+                    finally:
+                        print("::endgroup::")
 
                   if __name__ == "__main__":
                         test_connection()
                   EOF
 
+                  # 先安装requests库
+                  pip install requests
+
+                  # 再执行脚本
                   python test_api.py
               env:
                   API_KEY: ${{ secrets.ALIYUN_ACCESS_KEY_ID }}
