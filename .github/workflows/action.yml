@@ -51,6 +51,11 @@ jobs:
                     --debug 2>&1 | tee acme.log
                   done
 
+                  # 3. 验证文件生成
+                  echo "生成的证书文件："
+                  find ~/certs -type f
+                  ls -la ~/certs/*/*
+
             # 更新证书到阿里云CDN
             - name: Install Python dependencies
               run: pip install -r requirements.txt
