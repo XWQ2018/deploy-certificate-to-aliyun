@@ -72,37 +72,37 @@ jobs:
               env:
                   API_KEY: ${{ secrets.ALIYUN_ACCESS_KEY_ID }}
 
-            - name: Obtain SSL Certificates
-              env:
-                  DOMAINS: ${{ secrets.DOMAINS }}
-                  Ali_Key: ${{ secrets.ALIYUN_ACCESS_KEY_ID }}
-                  Ali_Secret: ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
-              run: |
-                  IFS=',' read -r -a domain_array <<< "${DOMAINS}"
-                  for domain in "${domain_array[@]}"; do
-                    ~/.acme.sh/acme.sh --issue --dns dns_ali -d "*.${domain}" \
-                    --key-file ~/certs/${domain}/privkey.pem --fullchain-file ~/certs/${domain}/fullchain.pem
-                  done
+            # - name: Obtain SSL Certificates
+            #   env:
+            #       DOMAINS: ${{ secrets.DOMAINS }}
+            #       Ali_Key: ${{ secrets.ALIYUN_ACCESS_KEY_ID }}
+            #       Ali_Secret: ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
+            #   run: |
+            #       IFS=',' read -r -a domain_array <<< "${DOMAINS}"
+            #       for domain in "${domain_array[@]}"; do
+            #         ~/.acme.sh/acme.sh --issue --dns dns_ali -d "*.${domain}" \
+            #         --key-file ~/certs/${domain}/privkey.pem --fullchain-file ~/certs/${domain}/fullchain.pem
+            #       done
 
-            - name: Install Python dependencies
-              run: pip install -r requirements.txt
+            # - name: Install Python dependencies
+            #   run: pip install -r requirements.txt
 
-            - name: Upload certificates to Alibaba Cloud CDN
-              env:
-                  ALIYUN_ACCESS_KEY_ID: ${{ secrets.ALIYUN_ACCESS_KEY_ID }}
-                  ALIYUN_ACCESS_KEY_SECRET: ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
-                  # 要设置域名的二级域名，例如要设置*.example.com，这里填写的就是example.com, 多个域名用英文逗号隔开
-                  DOMAINS: ${{ secrets.DOMAINS }}
-                  # 设置阿里云cdn域名，一般是三级域名，例如cdn.example.com，需要跟上面的DOMAINS对应，否则会设置错误
-                  ALIYUN_CDN_DOMAINS: ${{ secrets.ALIYUN_CDN_DOMAINS }}
+            # - name: Upload certificates to Alibaba Cloud CDN
+            #   env:
+            #       ALIYUN_ACCESS_KEY_ID: ${{ secrets.ALIYUN_ACCESS_KEY_ID }}
+            #       ALIYUN_ACCESS_KEY_SECRET: ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
+            #       # 要设置域名的二级域名，例如要设置*.example.com，这里填写的就是example.com, 多个域名用英文逗号隔开
+            #       DOMAINS: ${{ secrets.DOMAINS }}
+            #       # 设置阿里云cdn域名，一般是三级域名，例如cdn.example.com，需要跟上面的DOMAINS对应，否则会设置错误
+            #       ALIYUN_CDN_DOMAINS: ${{ secrets.ALIYUN_CDN_DOMAINS }}
 
-              run: python upload_certs_to_aliyun.py
+            #   run: python upload_certs_to_aliyun.py
 
-            - name: Clean up
-              env:
-                  DOMAINS: ${{ secrets.DOMAINS }}
-              run: |
-                  IFS=',' read -r -a domain_array <<< "${DOMAINS}"
-                  for domain in "${domain_array[@]}"; do
-                    rm -rf ~/certs/${domain}
-                  done
+            # - name: Clean up
+            #   env:
+            #       DOMAINS: ${{ secrets.DOMAINS }}
+            #   run: |
+            #       IFS=',' read -r -a domain_array <<< "${DOMAINS}"
+            #       for domain in "${domain_array[@]}"; do
+            #         rm -rf ~/certs/${domain}
+            #       done
