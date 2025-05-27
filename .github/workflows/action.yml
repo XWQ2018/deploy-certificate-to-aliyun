@@ -37,6 +37,11 @@ jobs:
                   done
 
             - name: Test API with Python
+            env:
+                ALIYUN_ACCESS_KEY_ID: ${{ secrets.ALIYUN_ACCESS_KEY_ID }}
+                ALIYUN_ACCESS_KEY_SECRET: ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
+                DOMAINS: ${{ secrets.DOMAINS }}
+                ALIYUN_CDN_DOMAINS: ${{ secrets.ALIYUN_CDN_DOMAINS }}
               run: |
                   cat << 'EOF' > update_cert_api.py
                   import requests
@@ -82,11 +87,7 @@ jobs:
 
                   # 再执行脚本
                   python update_cert_api.py
-              env:
-                  ALIYUN_ACCESS_KEY_ID: ${{ secrets.ALIYUN_ACCESS_KEY_ID }}
-                  ALIYUN_ACCESS_KEY_SECRET: ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
-                  DOMAINS: ${{ secrets.DOMAINS }}
-                  ALIYUN_CDN_DOMAINS: ${{ secrets.ALIYUN_CDN_DOMAINS }}
+            
 
             # - name: Obtain SSL Certificates
             #   env:
