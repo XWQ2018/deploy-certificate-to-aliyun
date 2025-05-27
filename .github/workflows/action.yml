@@ -43,10 +43,11 @@ jobs:
                   import os
                   def test_connection():
                     url = "https://env-00jxgwsep3px.dev-hz.cloudbasefunction.cn/updateCert/updateAliyCert"
-                    # headers = {
-                    #     "Authorization": f"Bearer {os.getenv('API_KEY')}",
-                    #     "Accept": "application/json"
-                    # }
+                    headers = {
+                    #   "Authorization": f"Bearer {os.getenv('API_KEY')}",
+                        "Accept": "application/json",
+                        "User-Agent": "GitHub-Actions"
+                    }
 
                     params = {
                         "cert_content": "证书内容",  # 证书内容
@@ -55,12 +56,12 @@ jobs:
                     }
 
                     try:
-                        response = requests.get(url, params=params, timeout=10)
+                        response = requests.get(url, params=params, headers=headers, timeout=10)
                         response.raise_for_status()  # 非2xx状态码抛出异常
-                        print(f"✅ 连接成功！状态码: {response.status_code}")
+                        print(f"连接成功！状态码: {response.status_code}")
                         print(response.json())
                     except Exception as e:
-                        print(f"❌ 连接失败: {str(e)}")
+                        print(f"连接失败: {str(e)}")
                         raise  # 使步骤失败
 
                     if __name__ == "__main__":
