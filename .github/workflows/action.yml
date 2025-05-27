@@ -20,6 +20,7 @@ jobs:
               with:
                   python-version: "3.8"
 
+            # 设置邮箱
             - name: Install acme.sh
               env:
                   EMAIL: ${{ secrets.EMAIL}}
@@ -28,6 +29,7 @@ jobs:
                   sudo apt-get install -y socat
                   curl https://get.acme.sh | sh -s email="${EMAIL}"
 
+            # 准备acme.sh的证书目录
             - name: Prepare acme.sh credentials
               run: |
                   mkdir -p ~/.acme.sh
@@ -35,25 +37,79 @@ jobs:
                   for domain in "${domain_array[@]}"; do
                     mkdir -p ~/certs/${domain}
                   done
+            # 拉取阿里云证书
+            - name: Obtain SSL Certificates
+              env:
+                  DOMAINS: ${{ secrets.DOMAINS }}
+                  Ali_Key: ${{ secrets.ALIYUN_ACCESS_KEY_ID }}
+                  Ali_Secret: ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
+              run: |
+                  IFS=',' read -r -a domain_array <<< "${DOMAINS}"
+                  for domain in "${domain_array[@]}"; do
+                    ~/.acme.sh/acme.sh --issue --dns dns_ali -d "${domain}" -d "*.${domain}" \
+                    --key-file ~/certs/${domain}/privkey.pem --fullchain-file ~/certs/${domain}/fullchain.pem
+                  done
 
-            - name: Test API with Python
+            # 更新证书到阿里云CDN
+            - name: Install Python dependencies
+              run: pip install -r requirements.txt
+
+            - name: Upload certificates to Alibaba Cloud CDN
+              env:
+                  ALIYUN_ACCESS_KEY_ID: ${{ secrets.ALIYUN_ACCESS_KEY_ID }}
+                  ALIYUN_ACCESS_KEY_SECRET: ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
+                  # 要设置域名的二级域名，例如要设置*.example.com，这里填写的就是example.com, 多个域名用英文逗号隔开
+                  DOMAINS: ${{ secrets.DOMAINS }}
+                  # 设置阿里云cdn域名，一般是三级域名，例如cdn.example.com，需要跟上面的DOMAINS对应，否则会设置错误
+                  ALIYUN_CDN_DOMAINS: ${{ secrets.ALIYUN_CDN_DOMAINS }}
+
+              run: python upload_certs_to_aliyun.py
+
+            # 更新证书到 Unicloud API
+            - name: update cert to unicloud API with Python
               env:
                   ALIYUN_ACCESS_KEY_ID: ${{ secrets.ALIYUN_ACCESS_KEY_ID }}
                   ALIYUN_ACCESS_KEY_SECRET: ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
                   DOMAINS: ${{ secrets.DOMAINS }}
                   ALIYUN_CDN_DOMAINS: ${{ secrets.ALIYUN_CDN_DOMAINS }}
+                  DEFAULT_DOMAIN: ${{ secrets.DEFAULT_DOMAIN }}
+                  REQUEST_URL1: ${{ secrets.REQUEST_URL1 }}
+                  REQUEST_URL2: ${{ secrets.REQUEST_URL2 }}
+
               run: |
                   cat << 'EOF' > update_cert_api.py
                   import requests
                   import os
 
-                  def requestUnicloudApi():
-                    print("::group::调试信息",os.getenv("ALIYUN_ACCESS_KEY_ID"))
-                    print("::group::调试信息",os.getenv("ALIYUN_ACCESS_KEY_SECRET"))
-                    print("::group::调试信息",os.getenv("DOMAINS"))
-                    print("::group::调试信息",os.getenv("ALIYUN_CDN_DOMAINS"))
+                  def get_env_var(key):
+                    value = os.getenv(key)
+                    if not value:
+                        raise EnvironmentError(f"Environment variable {key} not set")
+                    return value
 
-                    url = "https://env-00jxgwsep3px.dev-hz.cloudbasefunction.cn/updateCert/updateAliyCert"
+                  def file_exists_and_not_empty(file_path):
+                    expanded_path = os.path.expanduser(file_path)
+                    return os.path.isfile(expanded_path) and os.path.getsize(expanded_path) > 0
+
+                  def requestUnicloudApi():
+                    print("::group::调试信息")
+
+                    cert_path1 = f'~/certs/{os.getenv('DEFAULT_DOMAIN')}/fullchain.pem'
+                    key_path1 = f'~/certs/{os.getenv('DEFAULT_DOMAIN')}/privkey.pem'
+
+                    # cdn1获取证书内容
+                    expanded_cert_path1 = os.path.expanduser(cert_path1)
+                    expanded_key_path1 = os.path.expanduser(key_path1)
+
+                    if not file_exists_and_not_empty(expanded_cert_path1) or not file_exists_and_not_empty(expanded_key_path1):
+                        raise FileNotFoundError(f"Certificate or key file for domain {domain_name} is missing or empty")
+                    
+                    with open(expanded_cert_path1, 'r') as f:
+                        cert1 = f.read()
+
+                    with open(expanded_key_path1, 'r') as f:
+                        key1 = f.read()
+
                     headers = {
                     #   "Authorization": f"Bearer {os.getenv('API_KEY')}",
                         "Accept": "*/*",
@@ -61,14 +117,51 @@ jobs:
                         "Content-Type": "mutipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"
                     }
 
-                    params = {
-                        "cert_content": "证书内容",  # 证书内容
-                        "api_key": os.getenv("ALIYUN_ACCESS_KEY_ID"),  # 从环境变量读取
-                        "key_content": "秘钥私匙内容"       # 私匙内容
+                    params1 = {
+                        "cert_content": cert1,  # 证书内容
+                        "key_content": key1       # 私匙内容
+                    }
+                    
+                    cert_path2 = f'~/certs/{os.getenv('DEFAULT_DOMAIN')}/fullchain.pem'
+                    key_path2 = f'~/certs/{os.getenv('DEFAULT_DOMAIN')}/privkey.pem'
+
+                    # cdn2获取证书内容
+                    expanded_cert_path2 = os.path.expanduser(cert_path2)
+                    expanded_key_path2 = os.path.expanduser(key_path2)
+
+                    if not file_exists_and_not_empty(expanded_cert_path2) or not file_exists_and_not_empty(expanded_key_path2):
+                        raise FileNotFoundError(f"Certificate or key file for domain {domain_name} is missing or empty")
+                    
+                    with open(expanded_cert_path2, 'r') as f:
+                        cert2 = f.read()
+
+                    with open(expanded_key_path2, 'r') as f:
+                        key2 = f.read()
+
+                    url = os.getenv('REQUEST_URL1')
+                    url2= os.getenv('REQUEST_URL2')
+
+                    headers = {
+                    #   "Authorization": f"Bearer {os.getenv('API_KEY')}",
+                        "Accept": "*/*",
+                        "User-Agent": "GitHub-Actions",
+                        "Content-Type": "mutipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"
+                    }
+
+                    params2 = {
+                        "cert_content": cert2,  # 证书内容
+                        "key_content": key2       # 私匙内容
                     }
 
                     try:
-                        response = requests.get(url, params=params, headers=headers, timeout=10)
+                        # 更新cdn1证书
+                        response = requests.get(url, params=params1, headers=headers, timeout=10)
+                        response.raise_for_status()  # 非2xx状态码抛出异常
+                        print(f"连接成功！状态码: {response.status_code}")
+                        print(response.json())
+
+                        # 更新cdn2证书
+                        response = requests.get(url2, params=params2, headers=headers, timeout=10)
                         response.raise_for_status()  # 非2xx状态码抛出异常
                         print(f"连接成功！状态码: {response.status_code}")
                         print(response.json())
@@ -87,32 +180,6 @@ jobs:
 
                   # 再执行脚本
                   python update_cert_api.py
-
-            # - name: Obtain SSL Certificates
-            #   env:
-            #       DOMAINS: ${{ secrets.DOMAINS }}
-            #       Ali_Key: ${{ secrets.ALIYUN_ACCESS_KEY_ID }}
-            #       Ali_Secret: ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
-            #   run: |
-            #       IFS=',' read -r -a domain_array <<< "${DOMAINS}"
-            #       for domain in "${domain_array[@]}"; do
-            #         ~/.acme.sh/acme.sh --issue --dns dns_ali -d "*.${domain}" \
-            #         --key-file ~/certs/${domain}/privkey.pem --fullchain-file ~/certs/${domain}/fullchain.pem
-            #       done
-
-            # - name: Install Python dependencies
-            #   run: pip install -r requirements.txt
-
-            # - name: Upload certificates to Alibaba Cloud CDN
-            #   env:
-            #       ALIYUN_ACCESS_KEY_ID: ${{ secrets.ALIYUN_ACCESS_KEY_ID }}
-            #       ALIYUN_ACCESS_KEY_SECRET: ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
-            #       # 要设置域名的二级域名，例如要设置*.example.com，这里填写的就是example.com, 多个域名用英文逗号隔开
-            #       DOMAINS: ${{ secrets.DOMAINS }}
-            #       # 设置阿里云cdn域名，一般是三级域名，例如cdn.example.com，需要跟上面的DOMAINS对应，否则会设置错误
-            #       ALIYUN_CDN_DOMAINS: ${{ secrets.ALIYUN_CDN_DOMAINS }}
-
-            #   run: python upload_certs_to_aliyun.py
 
             # - name: Clean up
             #   env:
