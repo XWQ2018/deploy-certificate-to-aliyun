@@ -39,13 +39,13 @@ jobs:
                   done
 
             # 测试秘钥是否有效
-            - name: Test Alibaba Cloud DNS API
-              env:
-                  DOMAIN: "niuwei1688.com" # 替换为您的域名
-              run: |
-                  curl -s -X POST "https://alidns.aliyuncs.com/?Action=DescribeDomainRecords&DomainName=${DOMAIN}&Version=2015-01-09&Timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
-                      -H "Authorization: AccessKey ${{ secrets.ALIYUN_ACCESS_KEY_ID }}" \
-                      -H "Content-Type: application/json"
+            # - name: Test Alibaba Cloud DNS API
+            #   env:
+            #       DOMAIN: "niuwei1688.com" # 替换为您的域名
+            #   run: |
+            #       curl -s -X POST "https://alidns.aliyuncs.com/?Action=DescribeDomainRecords&DomainName=${DOMAIN}&Version=2015-01-09&Timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
+            #           -H "Authorization: AccessKey ${{ secrets.ALIYUN_ACCESS_KEY_ID }}" \
+            #           -H "Content-Type: application/json"
 
             # 拉取阿里云证书
             - name: Obtain SSL Certificates
