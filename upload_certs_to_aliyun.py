@@ -61,21 +61,29 @@ def main():
     print(f"使用的第一个域名：{first_domain}")
 
     # 所有CDN域名共用同一个证书
-    for cdn_domain in cdn_domains:
-        # 使用f-strings格式化路径
-        cert_path = f'~/certs/{first_domain}/fullchain.pem'
-        key_path = f'~/certs/{first_domain}/privkey.pem'
+    for i,cdn_domain in enumerate(cdn_domains):
+        if i == 0:  # 只处理索引为0的第一个元素
+            # 使用f-strings格式化路径
+            cert_path = f'~/certs/{first_domain}/fullchain.pem'
+            key_path = f'~/certs/{first_domain}/privkey.pem'
 
-        # 展开为绝对路径
-        expanded_cert = os.path.expanduser(cert_path)
-        expanded_key = os.path.expanduser(key_path)
+            # 展开为绝对路径
+            expanded_cert = os.path.expanduser(cert_path)
+            expanded_key = os.path.expanduser(key_path)
 
-        # 检查文件是否存在
-        if not os.path.exists(expanded_cert) or not os.path.exists(expanded_key):
-            print(f"警告：证书文件不存在，跳过 {cdn_domain}")
-            continue
+            # 检查文件是否存在
+            if not os.path.exists(expanded_cert) or not os.path.exists(expanded_key):
+                print(f"警告：证书文件不存在，跳过 {cdn_domain}")
+                continue
 
-        upload_certificate(client, cdn_domain, cert_path, key_path)
+            upload_certificate(client, cdn_domain, cert_path, key_path)
+
+            domainlog = cdn_domain.strip()
+            print(f"处理的第一个域名: {domainlog}")
+            # 后续操作...
+        else:
+         break  # 跳过其他域名
+        
     
     # for domain, cdn_domain in zip(domains, cdn_domains):
     #     cert_path = f'~/certs/{domain}/fullchain.pem'
