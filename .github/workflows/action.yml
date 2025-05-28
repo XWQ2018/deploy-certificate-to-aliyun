@@ -103,8 +103,8 @@ jobs:
                   def requestUnicloudApi():
                     print("::group::调试信息")
 
-                    cert_path1 = f'~/certs/{os.getenv('DEFAULT_DOMAIN')}/fullchain.pem'
-                    key_path1 = f'~/certs/{os.getenv('DEFAULT_DOMAIN')}/privkey.pem'
+                    cert_path1 = f"~/certs/{os.getenv('DEFAULT_DOMAIN')}/fullchain.pem"
+                    key_path1 = f"~/certs/{os.getenv('DEFAULT_DOMAIN')}/privkey.pem"
 
                     # cdn1获取证书内容
                     expanded_cert_path1 = os.path.expanduser(cert_path1)
@@ -131,9 +131,9 @@ jobs:
                         "key_content": key1       # 私匙内容
                     }
                     
-                    cert_path2 = f'~/certs/{os.getenv('DEFAULT_DOMAIN')}/fullchain.pem'
-                    key_path2 = f'~/certs/{os.getenv('DEFAULT_DOMAIN')}/privkey.pem'
-
+                    cert_path2 = f"~/certs/{os.getenv('DEFAULT_DOMAIN')}/fullchain.pem"
+                    key_path2 = f"~/certs/{os.getenv('DEFAULT_DOMAIN')}/privkey.pem"
+                    
                     # cdn2获取证书内容
                     expanded_cert_path2 = os.path.expanduser(cert_path2)
                     expanded_key_path2 = os.path.expanduser(key_path2)

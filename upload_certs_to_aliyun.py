@@ -20,7 +20,8 @@ def upload_certificate(client, domain_name, cert_path, key_path):
 
     print(f"Uploading certificate for domain--expanded_cert_path=: {expanded_cert_path}")
     print(f"Uploading certificate for domain---expanded_key_path=: {expanded_key_path}")
-    return
+    print(f"domain_name=: {domain_name}")
+    
 
     if not file_exists_and_not_empty(expanded_cert_path) or not file_exists_and_not_empty(expanded_key_path):
         raise FileNotFoundError(f"Certificate or key file for domain {domain_name} is missing or empty")
@@ -31,20 +32,20 @@ def upload_certificate(client, domain_name, cert_path, key_path):
     with open(expanded_key_path, 'r') as f:
         key = f.read()
 
-    # request = SetCdnDomainSSLCertificateRequest.SetCdnDomainSSLCertificateRequest()
-    request = DescribeDomainRecordsRequest.DescribeDomainRecordsRequest()
-    # CDN加速域名
-    request.set_DomainName(domain_name)
-    # 证书名称
-    request.set_CertName(domain_name + datetime.datetime.now().strftime("%Y%m%d"))
-    request.set_CertType('upload')
-    request.set_SSLProtocol('on')
-    request.set_SSLPub(cert)
-    request.set_SSLPri(key)
-    request.set_CertRegion('cn-hangzhou')
+    # # request = SetCdnDomainSSLCertificateRequest.SetCdnDomainSSLCertificateRequest()
+    # request = DescribeDomainRecordsRequest.DescribeDomainRecordsRequest()
+    # # CDN加速域名
+    # request.set_DomainName(domain_name)
+    # # 证书名称
+    # request.set_CertName(domain_name + datetime.datetime.now().strftime("%Y%m%d"))
+    # request.set_CertType('upload')
+    # request.set_SSLProtocol('on')
+    # request.set_SSLPub(cert)
+    # request.set_SSLPri(key)
+    # request.set_CertRegion('cn-hangzhou')
 
-    response = client.do_action_with_exception(request)
-    print(str(response, encoding='utf-8'))
+    # response = client.do_action_with_exception(request)
+    # print(str(response, encoding='utf-8'))
 
 def main():
     access_key_id = get_env_var('ALIYUN_ACCESS_KEY_ID')
