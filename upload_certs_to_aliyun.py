@@ -18,6 +18,10 @@ def upload_certificate(client, domain_name, cert_path, key_path):
     expanded_cert_path = os.path.expanduser(cert_path)
     expanded_key_path = os.path.expanduser(key_path)
 
+    print(f"Uploading certificate for domain--expanded_cert_path=: {expanded_cert_path}")
+    print(f"Uploading certificate for domain---expanded_key_path=: {expanded_key_path}")
+    return
+
     if not file_exists_and_not_empty(expanded_cert_path) or not file_exists_and_not_empty(expanded_key_path):
         raise FileNotFoundError(f"Certificate or key file for domain {domain_name} is missing or empty")
     
