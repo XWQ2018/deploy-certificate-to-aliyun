@@ -180,11 +180,11 @@ jobs:
                     finally:
                         print("::endgroup::")
 
-                  find ~/certs -type f
-
                   if __name__ == "__main__":
                         requestUnicloudApi()
                   EOF
+
+                  find ~/certs -type f
 
                   # 先安装requests库
                   pip install requests
