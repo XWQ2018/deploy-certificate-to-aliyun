@@ -76,12 +76,6 @@ def main():
             continue
 
         upload_certificate(client, cdn_domain, cert_path, key_path)
-
-    # for domain, cdns in domains:
-    #     cert_path = f'~/certs/{domain}/fullchain.pem'
-    #     key_path = f'~/certs/{domain}/privkey.pem'
-    #     for cdn_domain in cdns:
-    #         upload_certificate(client, cdn_domain, cert_path, key_path)
     
     # for domain, cdn_domain in zip(domains, cdn_domains):
     #     cert_path = f'~/certs/{domain}/fullchain.pem'
