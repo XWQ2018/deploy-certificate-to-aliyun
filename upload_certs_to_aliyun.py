@@ -57,11 +57,24 @@ def main():
     first_domain = domains[0] if len(domains) > 0 else None
     if not first_domain:
         raise ValueError("DOMAINS 环境变量未包含有效域名")
+    
+    print(f"使用的第一个域名：{first_domain}")
 
     # 所有CDN域名共用同一个证书
     for cdn_domain in cdn_domains:
-        cert_path = '~/certs/{first_domain}/fullchain.pem'
-        key_path = '~/certs/{first_domain}/privkey.pem'
+        # 使用f-strings格式化路径
+        cert_path = f'~/certs/{first_domain}/fullchain.pem'
+        key_path = f'~/certs/{first_domain}/privkey.pem'
+
+        # 展开为绝对路径
+        expanded_cert = os.path.expanduser(cert_path)
+        expanded_key = os.path.expanduser(key_path)
+
+        # 检查文件是否存在
+        if not os.path.exists(expanded_cert) or not os.path.exists(expanded_key):
+            print(f"警告：证书文件不存在，跳过 {cdn_domain}")
+            continue
+
         upload_certificate(client, cdn_domain, cert_path, key_path)
 
     # for domain, cdns in domains:
