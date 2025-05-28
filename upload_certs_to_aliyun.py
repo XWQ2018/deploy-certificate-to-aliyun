@@ -1,8 +1,8 @@
 import datetime
 import os
 from aliyunsdkcore.client import AcsClient
-# from aliyunsdkcdn.request.v20180510 import SetCdnDomainSSLCertificateRequest
-from aliyunsdkalidns.request.v20150109 import DescribeDomainRecordsRequest
+from aliyunsdkcdn.request.v20180510 import SetCdnDomainSSLCertificateRequest
+# from aliyunsdkalidns.request.v20150109 import DescribeDomainRecordsRequest
 
 def get_env_var(key):
     value = os.getenv(key)
@@ -32,8 +32,8 @@ def upload_certificate(client, domain_name, cert_path, key_path):
     with open(expanded_key_path, 'r') as f:
         key = f.read()
 
-    # request = SetCdnDomainSSLCertificateRequest.SetCdnDomainSSLCertificateRequest()
-    request = DescribeDomainRecordsRequest.DescribeDomainRecordsRequest()
+    request = SetCdnDomainSSLCertificateRequest.SetCdnDomainSSLCertificateRequest()
+
     # CDN加速域名
     request.set_DomainName(domain_name)
     # 证书名称
