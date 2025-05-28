@@ -49,9 +49,9 @@ jobs:
               run: |
                   IFS=',' read -r -a domain_array <<< "${DOMAINS}"
                   for domain in "${domain_array[@]}"; do
-                    ~/.acme.sh/acme.sh --issue --dns dns_ali -d "*.${domain}" \
+                    ~/.acme.sh/acme.sh --issue --dns dns_ali -d "${domain}" \
                     --key-file ~/certs/${domain}/privkey.pem --fullchain-file ~/certs/${domain}/fullchain.pem \
-                    --debug 2>&1 | tee acme.log
+                    # --debug 2>&1 | tee acme.log
                   done
 
                   # 3. 验证文件生成
@@ -81,7 +81,8 @@ jobs:
                   ALIYUN_ACCESS_KEY_SECRET: ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
                   DOMAINS: ${{ secrets.DOMAINS }}
                   ALIYUN_CDN_DOMAINS: ${{ secrets.ALIYUN_CDN_DOMAINS }}
-                  DEFAULT_DOMAIN: ${{ secrets.DEFAULT_DOMAIN }}
+                  CDN1: ${{ secrets.CDN1 }}
+                  CDN2: ${{ secrets.CDN2 }}
                   REQUEST_URL1: ${{ secrets.REQUEST_URL1 }}
                   REQUEST_URL2: ${{ secrets.REQUEST_URL2 }}
 
@@ -103,8 +104,8 @@ jobs:
                   def requestUnicloudApi():
                     print("::group::调试信息")
 
-                    cert_path1 = f"~/certs/{os.getenv('DEFAULT_DOMAIN')}/fullchain.pem"
-                    key_path1 = f"~/certs/{os.getenv('DEFAULT_DOMAIN')}/privkey.pem"
+                    cert_path1 = f"~/certs/{os.getenv('CDN1')}/fullchain.pem"
+                    key_path1 = f"~/certs/{os.getenv('CDN1')}/privkey.pem"
 
                     # cdn1获取证书内容
                     expanded_cert_path1 = os.path.expanduser(cert_path1)
@@ -131,8 +132,8 @@ jobs:
                         "key_content": key1       # 私匙内容
                     }
                     
-                    cert_path2 = f"~/certs/{os.getenv('DEFAULT_DOMAIN')}/fullchain.pem"
-                    key_path2 = f"~/certs/{os.getenv('DEFAULT_DOMAIN')}/privkey.pem"
+                    cert_path2 = f"~/certs/{os.getenv('CDN2')}/fullchain.pem"
+                    key_path2 = f"~/certs/{os.getenv('CDN2')}/privkey.pem"
                     
                     # cdn2获取证书内容
                     expanded_cert_path2 = os.path.expanduser(cert_path2)
