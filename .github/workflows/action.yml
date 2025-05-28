@@ -180,6 +180,8 @@ jobs:
                     finally:
                         print("::endgroup::")
 
+                  find ~/certs -type f
+
                   if __name__ == "__main__":
                         requestUnicloudApi()
                   EOF
