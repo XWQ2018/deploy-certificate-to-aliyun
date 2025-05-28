@@ -43,7 +43,7 @@ jobs:
               env:
                   DOMAIN: "niuwei1688.com" # 替换为您的域名
               run: |
-                  curl -s -X POST "https://alidns.aliyuncs.com/?Action=DescribeDomainRecords&DomainName=${DOMAIN}" \
+                  curl -s -X POST "https://alidns.aliyuncs.com/?Action=DescribeDomainRecords&DomainName=${DOMAIN}&Version=2015-01-09" \
                       -H "Authorization: AccessKey ${{ secrets.ALIYUN_ACCESS_KEY_ID }}" \
                       -H "Content-Type: application/json"
 
