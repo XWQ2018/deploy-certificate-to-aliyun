@@ -37,6 +37,16 @@ jobs:
                   for domain in "${domain_array[@]}"; do
                     mkdir -p ~/certs/${domain}
                   done
+
+            # 测试秘钥是否有效
+            - name: Test Alibaba Cloud DNS API
+              env:
+                  DOMAIN: "niuwei1688.com" # 替换为您的域名
+              run: |
+                  curl -s -X POST "https://alidns.aliyuncs.com/?Action=DescribeDomainRecords&DomainName=${DOMAIN}" \
+                      -H "Authorization: AccessKey ${{ secrets.ALIYUN_ACCESS_KEY_ID }}" \
+                      -H "Content-Type: application/json"
+
             # 拉取阿里云证书
             - name: Obtain SSL Certificates
               env:
