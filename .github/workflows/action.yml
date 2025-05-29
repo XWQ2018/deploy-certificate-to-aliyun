@@ -51,7 +51,7 @@ jobs:
                   for domain in "${domain_array[@]}"; do
                     ~/.acme.sh/acme.sh --issue --dns dns_ali -d "${domain}" \
                     --key-file ~/certs/${domain}/privkey.pem --fullchain-file ~/certs/${domain}/fullchain.pem \
-                    # --debug 2>&1 | tee acme.log
+                    --debug 2>&1 | tee acme.log
                   done
 
                   # 3. 验证文件生成
