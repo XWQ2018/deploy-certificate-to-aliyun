@@ -135,7 +135,7 @@ jobs:
                         request = UploadServerCertificateRequest.UploadServerCertificateRequest()
                         request.set_ServerCertificate(cert_pem)
                         request.set_PrivateKey(key_pem)
-                        req.set_ServerCertificateName(f"{domainName}-cert")
+                        request.set_ServerCertificateName(f"{domainName}-cert")
                         cert_id = json.loads(client.do_action_with_exception(request).decode())['ServerCertificateId']
                         
                         # 绑定到监听器
@@ -188,8 +188,8 @@ jobs:
                   def requestUnicloudApi():
                     print("::group::调试信息")
 
-                    cert_path1 = f"~/certs/{os.getenv('CDN1')}/fullchain.pem"
-                    key_path1 = f"~/certs/{os.getenv('CDN1')}/privkey.pem"
+                    cert_path1 = f"~/certs/{get_env_var('CDN1')}/fullchain.pem"
+                    key_path1 = f"~/certs/{get_env_var('CDN1')}/privkey.pem"
 
                     # cdn1获取证书内容
                     expanded_cert_path1 = os.path.expanduser(cert_path1)
@@ -216,8 +216,8 @@ jobs:
                         "key_content": key1       # 私匙内容
                     }
                     
-                    cert_path2 = f"~/certs/{os.getenv('CDN2')}/fullchain.pem"
-                    key_path2 = f"~/certs/{os.getenv('CDN2')}/privkey.pem"
+                    cert_path2 = f"~/certs/{get_env_var('CDN2')}/fullchain.pem"
+                    key_path2 = f"~/certs/{get_env_var('CDN2')}/privkey.pem"
                     
                     # cdn2获取证书内容
                     expanded_cert_path2 = os.path.expanduser(cert_path2)
@@ -232,8 +232,8 @@ jobs:
                     with open(expanded_key_path2, 'r') as f:
                         key2 = f.read()
 
-                    url = os.getenv('REQUEST_URL1')
-                    url2= os.getenv('REQUEST_URL2')
+                    url = get_env_var('REQUEST_URL1')
+                    url2= get_env_var('REQUEST_URL2')
 
                     headers = {
                     #   "Authorization": f"Bearer {os.getenv('API_KEY')}",
