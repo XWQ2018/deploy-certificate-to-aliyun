@@ -89,68 +89,66 @@ jobs:
               run: |
                   cat << 'EOF' > update_sslcert_api.py
                   import os
+                  import json
                   from aliyunsdkcore.client import AcsClient
                   from aliyunsdkcore.acs_exception.exceptions import ServerException
                   from aliyunsdkcore.acs_exception.exceptions import ClientException
-                  from aliyunsdkcertcenter.request.v20180208 import ImportCertificateRequest
+                  from aliyunsdkslb.request.v20140515 import UploadServerCertificateRequest, SetLoadBalancerHTTPSListenerAttributeRequest
 
+                  # 获取配置  
                   def get_env_var(key):
                     value = os.getenv(key)
                     if not value:
                         raise EnvironmentError(f"Environment variable {key} not set")
                     return value
-
+                  # 判空   
                   def file_exists_and_not_empty(file_path):
                     expanded_path = os.path.expanduser(file_path)
                     return os.path.isfile(expanded_path) and os.path.getsize(expanded_path) > 0
 
-                  def import_certificate():
+                    # 设置证书 
+                  def set_certificate():
                     # 初始化 AcsClient
                     client = AcsClient(get_env_var('ALIYUN_ACCESS_KEY_ID'), get_env_var('ALIYUN_ACCESS_KEY_SECRET'), 'cn-hangzhou')
 
-                    request = ImportCertificateRequest.ImportCertificateRequest()
-                    request.set_accept_format('json')
-
                     domains = get_env_var('DOMAINS').split(',')
 
-                    for domainItem in domains:
+                    for domainName in domains:
                         # 读取证书和私钥文件
-                        cert_content = f"~/certs/{domainItem}/fullchain.pem"
-                        key_content = f"~/certs/{domainItem}/privkey.pem"
+                        cert_content = f"~/certs/{domainName}/fullchain.pem"
+                        key_content = f"~/certs/{domainName}/privkey.pem"
 
                         # cdn1获取证书内容
                         expanded_cert_path = os.path.expanduser(cert_content)
                         expanded_key_path = os.path.expanduser(key_content)
 
                         if not file_exists_and_not_empty(expanded_cert_path) or not file_exists_and_not_empty(expanded_key_path):
-                            raise FileNotFoundError(f"Certificate or key file for domain {domainItem} is missing or empty")
+                            raise FileNotFoundError(f"Certificate or key file for domain {domainName} is missing or empty")
                         
                         with open(expanded_cert_path, 'r') as f:
-                            cert = f.read()
+                            cert_pem = f.read()
 
                         with open(expanded_key_path, 'r') as f:
-                            key = f.read()
+                            key_pem = f.read()
 
                         # 设置请求参数
-                        request.set_CertificateBody(cert)
-                        request.set_PrivateKey(key)
-                        request.set_Duration(3)  # 证书有效期，单位为年
-                        # request.set_KeyUsage('digitalSignature,keyEncipherment')
-                        # request.set_ExtendedKeyUsage('serverAuth')
-                        request.set_ValidityPeriodUnit('Month')  # 证书有效期单位，1 表示年
-                        request.set_CommonName(domainItem)  # 替换为你的域名
+                        request = UploadServerCertificateRequest()
+                        request.set_ServerCertificate(cert_pem)
+                        request.set_PrivateKey(key_pem)
+                        req.set_ServerCertificateName(f"{domainName}-cert")
+                        cert_id = json.loads(client.do_action_with_exception(request).decode())['ServerCertificateId']
                         
-                        try:
-                            # 发送请求
-                            response = client.do_action_with_exception(request)
-                            print('Certificate imported successfully:', response)
-                        except ServerException as e:
-                            print('ServerException:', e.get_error_code(), e.get_error_msg())
-                        except ClientException as e:
-                            print('ClientException:', e.get_error_code(), e.get_error_msg())
+                        # 绑定到监听器
+                        # bind_req = SetLoadBalancerHTTPSListenerAttributeRequest()
+                        # bind_req.set_LoadBalancerId(lb_id)
+                        # bind_req.set_ListenerPort(443)
+                        # bind_req.set_ServerCertificateId(cert_id)
+                        # client.do_action_with_exception(bind_req)
+
+                        print(f"证书已更新: {domainName}")
 
                   if __name__ == '__main__':
-                    import_certificate()
+                    set_certificate()
 
                   EOF
 
