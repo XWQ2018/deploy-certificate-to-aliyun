@@ -132,7 +132,7 @@ jobs:
                             key_pem = f.read()
 
                         # 设置请求参数
-                        request = UploadServerCertificateRequest()
+                        request = UploadServerCertificateRequest.UploadServerCertificateRequest()
                         request.set_ServerCertificate(cert_pem)
                         request.set_PrivateKey(key_pem)
                         req.set_ServerCertificateName(f"{domainName}-cert")
