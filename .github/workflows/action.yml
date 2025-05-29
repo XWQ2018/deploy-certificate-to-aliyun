@@ -63,16 +63,102 @@ jobs:
             - name: Install Python dependencies
               run: pip install -r requirements.txt
 
-            - name: Upload certificates to Alibaba Cloud CDN
+            # - name: Upload certificates to Alibaba Cloud CDN
+            #   env:
+            #       ALIYUN_ACCESS_KEY_ID: ${{ secrets.ALIYUN_ACCESS_KEY_ID }}
+            #       ALIYUN_ACCESS_KEY_SECRET: ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
+            #       # 要设置域名的二级域名，例如要设置*.example.com，这里填写的就是example.com, 多个域名用英文逗号隔开
+            #       DOMAINS: ${{ secrets.DOMAINS }}
+            #       # 设置阿里云cdn域名，一般是三级域名，例如cdn.example.com，需要跟上面的DOMAINS对应，否则会设置错误
+            #       ALIYUN_CDN_DOMAINS: ${{ secrets.ALIYUN_CDN_DOMAINS }}
+
+            #   run: python upload_certs_to_aliyun.py
+
+            # 上传阿里云证书
+            - name: Upload certificates
               env:
                   ALIYUN_ACCESS_KEY_ID: ${{ secrets.ALIYUN_ACCESS_KEY_ID }}
                   ALIYUN_ACCESS_KEY_SECRET: ${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
-                  # 要设置域名的二级域名，例如要设置*.example.com，这里填写的就是example.com, 多个域名用英文逗号隔开
                   DOMAINS: ${{ secrets.DOMAINS }}
-                  # 设置阿里云cdn域名，一般是三级域名，例如cdn.example.com，需要跟上面的DOMAINS对应，否则会设置错误
                   ALIYUN_CDN_DOMAINS: ${{ secrets.ALIYUN_CDN_DOMAINS }}
+                  CDN1: ${{ secrets.CDN1 }}
+                  CDN2: ${{ secrets.CDN2 }}
+                  REQUEST_URL1: ${{ secrets.REQUEST_URL1 }}
+                  REQUEST_URL2: ${{ secrets.REQUEST_URL2 }}
 
-              run: python upload_certs_to_aliyun.py
+              run: |
+                  cat << 'EOF' > update_sslcert_api.py
+                  import os
+                  from aliyunsdkcore.client import AcsClient
+                  from aliyunsdkcore.acs_exception.exceptions import ServerException
+                  from aliyunsdkcore.acs_exception.exceptions import ClientException
+                  from aliyunsdkcertcenter.request.v20180208 import ImportCertificateRequest
+
+                  def get_env_var(key):
+                    value = os.getenv(key)
+                    if not value:
+                        raise EnvironmentError(f"Environment variable {key} not set")
+                    return value
+
+                  def file_exists_and_not_empty(file_path):
+                    expanded_path = os.path.expanduser(file_path)
+                    return os.path.isfile(expanded_path) and os.path.getsize(expanded_path) > 0
+
+                  def import_certificate():
+                    # 初始化 AcsClient
+                    client = AcsClient(get_env_var('ALIYUN_ACCESS_KEY_ID'), get_env_var('ALIYUN_ACCESS_KEY_SECRET'), 'cn-hangzhou')
+
+                    request = ImportCertificateRequest.ImportCertificateRequest()
+                    request.set_accept_format('json')
+
+                    domains = get_env_var('DOMAINS').split(',')
+
+                    for domainItem in domains:
+                        # 读取证书和私钥文件
+                        cert_content = f"~/certs/{domainItem}/fullchain.pem"
+                        key_content = f"~/certs/{domainItem}/privkey.pem"
+
+                        # cdn1获取证书内容
+                        expanded_cert_path = os.path.expanduser(cert_content)
+                        expanded_key_path = os.path.expanduser(key_content)
+
+                        if not file_exists_and_not_empty(expanded_cert_path) or not file_exists_and_not_empty(expanded_key_path):
+                            raise FileNotFoundError(f"Certificate or key file for domain {domainItem} is missing or empty")
+                        
+                        with open(expanded_cert_path, 'r') as f:
+                            cert = f.read()
+
+                        with open(expanded_key_path, 'r') as f:
+                            key = f.read()
+
+                        # 设置请求参数
+                        request.set_CertificateBody(cert)
+                        request.set_PrivateKey(key)
+                        request.set_Duration(3)  # 证书有效期，单位为年
+                        # request.set_KeyUsage('digitalSignature,keyEncipherment')
+                        # request.set_ExtendedKeyUsage('serverAuth')
+                        request.set_ValidityPeriodUnit('Month')  # 证书有效期单位，1 表示年
+                        request.set_CommonName(domainItem)  # 替换为你的域名
+                        
+                        try:
+                            # 发送请求
+                            response = client.do_action_with_exception(request)
+                            print('Certificate imported successfully:', response)
+                        except ServerException as e:
+                            print('ServerException:', e.get_error_code(), e.get_error_msg())
+                        except ClientException as e:
+                            print('ClientException:', e.get_error_code(), e.get_error_msg())
+
+                  if __name__ == '__main__':
+                    import_certificate()
+
+                  EOF
+
+                  # 查看证书路径   
+                  find ~/certs -type f
+
+                  # 再执行脚本
+                  python update_sslcert_api.py
 
             # 更新证书到 Unicloud API
             - name: update cert to unicloud API with Python
@@ -193,11 +279,11 @@ jobs:
                   # 再执行脚本
                   python update_cert_api.py
 
-            # - name: Clean up
-            #   env:
-            #       DOMAINS: ${{ secrets.DOMAINS }}
-            #   run: |
-            #       IFS=',' read -r -a domain_array <<< "${DOMAINS}"
-            #       for domain in "${domain_array[@]}"; do
-            #         rm -rf ~/certs/${domain}
-            #       done
+            - name: Clean up
+              env:
+                  DOMAINS: ${{ secrets.DOMAINS }}
+              run: |
+                  IFS=',' read -r -a domain_array <<< "${DOMAINS}"
+                  for domain in "${domain_array[@]}"; do
+                    rm -rf ~/certs/${domain}
+                  done

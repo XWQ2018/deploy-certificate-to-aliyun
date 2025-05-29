@@ -2,7 +2,7 @@ import datetime
 import os
 from aliyunsdkcore.client import AcsClient
 from aliyunsdkcdn.request.v20180510 import SetCdnDomainSSLCertificateRequest
-# from aliyunsdkalidns.request.v20150109 import DescribeDomainRecordsRequest
+from aliyunsdkalidns.request.v20150109 import DescribeDomainRecordsRequest
 
 def get_env_var(key):
     value = os.getenv(key)
