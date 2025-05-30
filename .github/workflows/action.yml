@@ -150,6 +150,7 @@ jobs:
                         # client.do_action_with_exception(bind_req)
 
                         print(f"证书已更新: {domainName}")
+                        print(f"证书ID: {cert_id}")
 
                   if __name__ == '__main__':
                     set_certificate()
