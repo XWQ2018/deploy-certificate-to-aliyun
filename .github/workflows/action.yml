@@ -51,8 +51,6 @@ jobs:
                   for domain in "${domain_array[@]}"; do
                     ~/.acme.sh/acme.sh --issue --dns dns_ali -d "${domain}" --keylength 2048 \
                     --key-file ~/certs/${domain}/privkey.pem --fullchain-file ~/certs/${domain}/fullchain.pem \
-                    # --retry 3 \          # 自动重试3次
-                    # --retry-delay 60 \     # 每次间隔60秒
                     --debug 2>&1 | tee acme.log
                   done
 
