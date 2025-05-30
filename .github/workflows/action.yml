@@ -97,7 +97,7 @@ jobs:
             #       from aliyunsdkcore.client import AcsClient
             #       from aliyunsdkcore.acs_exception.exceptions import ServerException
             #       from aliyunsdkcore.acs_exception.exceptions import ClientException
-            #       from aliyunsdkcert.request.v20200430 import ImportCertificateRequest
+            #       from aliyunsdkcas.request.v20200430 import ImportCertificateRequest
             #       # from aliyunsdkslb.request.v20140515 import UploadServerCertificateRequest, SetLoadBalancerHTTPSListenerAttributeRequest
 
             #       # 获取配置
