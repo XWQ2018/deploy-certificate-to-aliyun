@@ -18,7 +18,7 @@ jobs:
             - name: Set up Python
               uses: actions/setup-python@v2
               with:
-                  python-version: "3.8"
+                  python-version: "3.6"
 
             # 设置邮箱
             - name: Install acme.sh
@@ -97,7 +97,7 @@ jobs:
             #       from aliyunsdkcore.client import AcsClient
             #       from aliyunsdkcore.acs_exception.exceptions import ServerException
             #       from aliyunsdkcore.acs_exception.exceptions import ClientException
-            #       from aliyunsdkcas.request.v20200430 import ImportCertificateRequest
+            #       from aliyunsdkcas.request.v20180713 import ImportCertificateRequest
             #       # from aliyunsdkslb.request.v20140515 import UploadServerCertificateRequest, SetLoadBalancerHTTPSListenerAttributeRequest
 
             #       # 获取配置
