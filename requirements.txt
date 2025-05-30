@@ -1,4 +1,5 @@
 aliyun-python-sdk-core
+# aliyun-python-sdk-slb
+aliyuncs-python-sdk-cert
 # aliyun-python-sdk-cdn
 # aliyun-python-sdk-alidns
-aliyun-python-sdk-slb
