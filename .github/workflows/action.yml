@@ -20,25 +20,17 @@ jobs:
             #   with:
             #       python-version: "3.7.1"
 
-            - name: Download Python 3.6.8
+            - name: Download Python 3.6.8 from third-party server
               run: |
-                  curl -o python-3.6.8-amd64.exe -L https://env-00jxgwsep3px.normal.cloudstatic.cn/python-3.6.8-amd64.exe?expire_at=1748924986&er_sign=8ba27c27d67716308cbb11eb994c0046
-
-            - name: Install Python 3.6.8
-              run: |
-                  Start-Process -Wait -FilePath ".\python-3.6.8-amd64.exe" -ArgumentList "/quiet InstallAllUsers=1 PrependPath=1 Include_test=0"
+                  wget https://env-00jxgwsep3px.normal.cloudstatic.cn/Python-3.6.8.tgz?expire_at=1748931098&er_sign=40271e00866495a3a431258ff07c36f2
+                  tar xzf Python-3.6.8.tgz
+                  cd Python-3.6.8
+                  ./configure --enable-optimizations
+                  make -j $(nproc)
+                  sudo make altinstall
 
             - name: Verify Python version
-              run: |
-                  python --version
-
-            - name: Set up Python path
-              run: |
-                  echo "##vso[task.setvariable variable=PATH]C:\Python36;C:\Python36\Scripts;$env:PATH"
-
-            - name: Upgrade pip
-              run: |
-                  python -m pip install --upgrade pip
+              run: python3.6 --version
 
             # 设置邮箱
             - name: Install acme.sh
