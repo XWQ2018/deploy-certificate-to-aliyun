@@ -97,7 +97,8 @@ jobs:
                   from aliyunsdkcore.client import AcsClient
                   from aliyunsdkcore.acs_exception.exceptions import ServerException
                   from aliyunsdkcore.acs_exception.exceptions import ClientException
-                  from aliyunsdkcas.request.v20200407 import ImportCertificateRequest
+                  from aliyunsdkcore.request import CommonRequest
+                  # from aliyunsdkcas.request.v20200407 import ImportCertificateRequest
                   # from aliyunsdkcas.request.v20200407.CreateCertificateRequestRequest import CreateCertificateRequestRequest
                   # from aliyunsdkslb.request.v20140515 import UploadServerCertificateRequest, SetLoadBalancerHTTPSListenerAttributeRequest
 
@@ -137,24 +138,48 @@ jobs:
                         with open(expanded_key_path, 'r') as f:
                             key_pem = f.read()
 
-                        # 创建 ImportCertificateRequest 对象
-                        request = ImportCertificateRequest.ImportCertificateRequest() //证书更新
-                        # request=CreateCertificateRequestRequest() //证书创建
+                        # ------------------------------------------------
 
-                        # 设置证书内容
-                        request.set_Certificate(cert_pem)
+                        # # 创建 ImportCertificateRequest 对象
+                        # request = ImportCertificateRequest.ImportCertificateRequest() //证书更新
+                        # # request=CreateCertificateRequestRequest() //证书创建
 
-                        # 设置私钥内容
-                        request.set_PrivateKey(key_pem)
+                        # # 设置证书内容
+                        # request.set_Certificate(cert_pem)
 
-                        # 设置证书名称
-                        request.set_Name(f"{domainName}-cert")
+                        # # 设置私钥内容
+                        # request.set_PrivateKey(key_pem)
 
-                        # 设置证书描述
-                        request.set_Description("Certificate for domain: "+ domainName)
+                        # # 设置证书名称
+                        # request.set_Name(f"{domainName}-cert")
 
-                        # 设置证书类型
-                        request.set_CertificateType("SERVER")
+                        # # 设置证书描述
+                        # request.set_Description("Certificate for domain: "+ domainName)
+
+                        # # 设置证书类型
+                        # request.set_CertificateType("SERVER")
+
+                        # # 发送请求并获取响应
+                        # response = client.do_action_with_exception(request)
+
+                        # # 解析响应
+                        # response_json = json.loads(response.decode('utf-8'))
+                        
+                        # ----------------------------------------------------------
+
+                        # 创建 CommonRequest 对象
+                        request = CommonRequest()
+                        request.set_accept_format('json')
+                        request.set_domain(domainName)  # 设置为证书管理服务的域名
+                        request.set_method('POST')
+                        request.set_protocol_type('https') # https | http
+                        request.set_version('2020-04-07')  # 设置 API 版本
+                        request.set_action_name('UploadUserCertificate')  # 设置 API 操作名称
+
+                        # 设置 API 参数
+                        request.add_query_param('Domain', domainName)  # 你的域名
+                        request.add_query_param('Cert', cert_pem)  # 你的证书内容（PEM 格式）
+                        request.add_query_param('Key', key_pem)  # 你的私钥内容（PEM 格式）
 
                         # 发送请求并获取响应
                         response = client.do_action_with_exception(request)
