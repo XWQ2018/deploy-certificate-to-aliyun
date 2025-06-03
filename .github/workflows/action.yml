@@ -22,19 +22,23 @@ jobs:
 
             - name: Download Python 3.6.8
               run: |
-                  curl -L -o python-3.6.8-win32-x64.zip https://env-00jxgwsep3px.normal.cloudstatic.cn/python-3.6.8-win32-x64.zip?expire_at=1748924025&er_sign=43dff0739d0d7c50c756de40f7e1dd56
+                  curl -o python-3.6.8-amd64.exe -L https://env-00jxgwsep3px.normal.cloudstatic.cn/python-3.6.8-amd64.exe?expire_at=1748924986&er_sign=8ba27c27d67716308cbb11eb994c0046
 
-            - name: Extract Python 3.6.8
+            - name: Install Python 3.6.8
               run: |
-                  7z x python-3.6.8-win32-x64.zip -oC:Python36
+                  Start-Process -Wait -FilePath ".\python-3.6.8-amd64.exe" -ArgumentList "/quiet InstallAllUsers=1 PrependPath=1 Include_test=0"
 
-            - name: Add Python to PATH
-              run: |
-                  echo "C:Python36;C:Python36Scripts" | Out-File -FilePath $env:GITHUB_PATH -Append
-
-            - name: Verify Python installation
+            - name: Verify Python version
               run: |
                   python --version
+
+            - name: Set up Python path
+              run: |
+                  echo "##vso[task.setvariable variable=PATH]C:\Python36;C:\Python36\Scripts;$env:PATH"
+
+            - name: Upgrade pip
+              run: |
+                  python -m pip install --upgrade pip
 
             # 设置邮箱
             - name: Install acme.sh
