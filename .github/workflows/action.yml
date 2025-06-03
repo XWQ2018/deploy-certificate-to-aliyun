@@ -285,7 +285,7 @@ jobs:
                         requestUnicloudApi()
                   EOF
 
-                  find ~/certs -type f
+                  # find ~/certs -type f
 
                   # 先安装requests库
                   pip install requests
