@@ -15,10 +15,26 @@ jobs:
             - name: Checkout repository
               uses: actions/checkout@v2
 
-            - name: Set up Python
-              uses: actions/setup-python@v2
-              with:
-                  python-version: "3.6.15"
+            # - name: Set up Python
+            #   uses: actions/setup-python@v2
+            #   with:
+            #       python-version: "3.7.1"
+
+            - name: Download Python 3.6.8
+              run: |
+                  curl -L -o python-3.6.8-win32-x64.zip https://env-00jxgwsep3px.normal.cloudstatic.cn/python-3.6.8-win32-x64.zip?expire_at=1748924025&er_sign=43dff0739d0d7c50c756de40f7e1dd56
+
+            - name: Extract Python 3.6.8
+              run: |
+                  7z x python-3.6.8-win32-x64.zip -oC:Python36
+
+            - name: Add Python to PATH
+              run: |
+                  echo "C:Python36;C:Python36Scripts" | Out-File -FilePath $env:GITHUB_PATH -Append
+
+            - name: Verify Python installation
+              run: |
+                  python --version
 
             # 设置邮箱
             - name: Install acme.sh
