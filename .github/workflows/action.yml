@@ -22,7 +22,7 @@ jobs:
 
             - name: Download Python 3.6.8 from third-party server
               run: |
-                  wget https://env-00jxgwsep3px.normal.cloudstatic.cn/Python-3.6.8.tgz?expire_at=1748931098&er_sign=40271e00866495a3a431258ff07c36f2
+                  wget https://cdn.niuwei1688.com/Python-3.6.8.tgz
                   tar xzf Python-3.6.8.tgz
                   cd Python-3.6.8
                   ./configure --enable-optimizations
