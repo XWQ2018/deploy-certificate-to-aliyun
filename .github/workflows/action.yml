@@ -61,7 +61,7 @@ jobs:
                   # 3. 验证文件生成
                   echo "生成的证书文件："
                   find ~/certs -type f
-                  ls -la ~/certs/*/*
+              #   ls -la ~/certs/*/*
 
             # 更新证书到阿里云CDN
             - name: Install Python dependencies
@@ -170,7 +170,7 @@ jobs:
                         # 创建 CommonRequest 对象
                         request = CommonRequest()
                         request.set_accept_format('json')
-                        request.set_domain(domainName)  # 设置为证书管理服务的域名
+                        request.set_domain("cas.aliyuncs.com")  # 设置为证书管理服务的域名
                         request.set_method('POST')
                         request.set_protocol_type('https') # https | http
                         request.set_version('2020-04-07')  # 设置 API 版本
