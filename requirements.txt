@@ -1,6 +1,6 @@
 aliyun-python-sdk-core
 # aliyun-python-sdk-slb
-aliyun-python-sdk-cas
+aliyun-python-sdk-cas==201807130114
 # aliyuncs-python-sdk-cas
 # aliyun-python-sdk-cdn
 # aliyun-python-sdk-alidns
