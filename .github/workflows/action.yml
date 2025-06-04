@@ -195,9 +195,12 @@ jobs:
                         response_json = json.loads(response.decode('utf-8'))
 
                         # 获取证书 ID
-                        certificate_id = response_json.get('CertificateId')
+                        certificate_id = response_json.get('CertId')
 
                         print(f"证书已更新: {domainName}")
+                        # 打印证书内容
+                        print(cert_pem)
+                        print(key_pem)
                         print(f"证书ID: {certificate_id}")
                         print(f"响应内容: {response_json}")
 
@@ -327,13 +330,13 @@ jobs:
 
                     try:
                         # 更新cdn1证书
-                        response_url1 = requests.get(url, params=params1, headers=headers, timeout=60)
+                        response_url1 = requests.get(url, params=params1, headers=headers, timeout=360)
                         response_url1.raise_for_status()  # 非2xx状态码抛出异常
                         print(f"连接成功！状态码: {response_url1.status_code}")
                         print(response_url1.json())
 
                         # 更新cdn2证书
-                        response_url2 = requests.get(url2, params=params2, headers=headers, timeout=60)
+                        response_url2 = requests.get(url2, params=params2, headers=headers, timeout=360)
                         response_url2.raise_for_status()  # 非2xx状态码抛出异常
                         print(f"连接成功！状态码: {response_url2.status_code}")
                         print(response_url2.json())
