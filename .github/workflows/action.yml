@@ -117,9 +117,9 @@ jobs:
                     # 设置证书
                   def set_certificate():
                     # 初始化 AcsClient
-                    # client = AcsClient(get_env_var('ALIYUN_ACCESS_KEY_ID'), get_env_var('ALIYUN_ACCESS_KEY_SECRET'), 'cn-hangzhou')
-                    credentials = AccessKeyCredential(os.environ[get_env_var('ALIYUN_ACCESS_KEY_ID')], os.environ[get_env_var('ALIYUN_ACCESS_KEY_SECRET')])
-                    client = AcsClient(region_id='cn-hangzhou', credential=credentials)
+                    client = AcsClient(get_env_var('ALIYUN_ACCESS_KEY_ID'), get_env_var('ALIYUN_ACCESS_KEY_SECRET'), 'cn-hangzhou')
+                    # credentials = AccessKeyCredential(os.environ[get_env_var('ALIYUN_ACCESS_KEY_ID')], os.environ[get_env_var('ALIYUN_ACCESS_KEY_SECRET')])
+                    # client = AcsClient(region_id='cn-hangzhou', credential=credentials)
                     
                     domains = get_env_var('DOMAINS').split(',')
 
