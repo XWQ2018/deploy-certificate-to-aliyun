@@ -98,6 +98,7 @@ jobs:
                   from aliyunsdkcore.acs_exception.exceptions import ServerException
                   from aliyunsdkcore.acs_exception.exceptions import ClientException
                   from aliyunsdkcore.request import CommonRequest
+                  from aliyunsdkcore.auth.credentials import AccessKeyCredential
                   # from aliyunsdkcas.request.v20200407 import ImportCertificateRequest
                   # from aliyunsdkcas.request.v20200407.CreateCertificateRequestRequest import CreateCertificateRequestRequest
                   # from aliyunsdkslb.request.v20140515 import UploadServerCertificateRequest, SetLoadBalancerHTTPSListenerAttributeRequest
@@ -116,8 +117,10 @@ jobs:
                     # 设置证书
                   def set_certificate():
                     # 初始化 AcsClient
-                    client = AcsClient(get_env_var('ALIYUN_ACCESS_KEY_ID'), get_env_var('ALIYUN_ACCESS_KEY_SECRET'), 'cn-hangzhou')
-
+                    # client = AcsClient(get_env_var('ALIYUN_ACCESS_KEY_ID'), get_env_var('ALIYUN_ACCESS_KEY_SECRET'), 'cn-hangzhou')
+                    credentials = AccessKeyCredential(os.environ[get_env_var('ALIYUN_ACCESS_KEY_ID')], os.environ[get_env_var('ALIYUN_ACCESS_KEY_SECRET')])
+                    client = AcsClient(region_id='cn-hangzhou', credential=credentials)
+                    
                     domains = get_env_var('DOMAINS').split(',')
 
                     for domainName in domains:
@@ -180,6 +183,8 @@ jobs:
                         request.add_query_param('Domain', domainName)  # 你的域名
                         request.add_query_param('Cert', cert_pem)  # 你的证书内容（PEM 格式）
                         request.add_query_param('Key', key_pem)  # 你的私钥内容（PEM 格式）
+                        request.add_query_param('Name', "certificate-{domainName}")  # 证书名称
+                        request.add_query_param('SslVersion', 'TLSv1.2')  # SSL 版本
 
                         # 发送请求并获取响应
                         response = client.do_action_with_exception(request)
