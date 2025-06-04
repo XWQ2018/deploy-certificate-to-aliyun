@@ -199,6 +199,25 @@ jobs:
 
                         print(f"证书已更新: {domainName}")
                         print(f"证书ID: {certificate_id}")
+                        print(f"响应内容: {response_json}")
+
+                        # # 创建 CommonRequest 对象用于部署证书
+                        # deploy_request = CommonRequest()
+                        # deploy_request.set_accept_format('json')
+                        # deploy_request.set_domain('slb.aliyuncs.com')
+                        # deploy_request.set_method('POST')
+                        # deploy_request.set_version('2020-04-07')
+                        # deploy_request.set_action_name('SetLoadBalancerSSLConfig')
+                        # deploy_request.add_query_param('LoadBalancerId', '<your-load-balancer-id>')
+                        # deploy_request.add_query_param('ListenerPort', 443)
+                        # deploy_request.add_query_param('SSLProtocol', 'TLSv1.2')
+                        # deploy_request.add_query_param('CertId', certificate_id)  # 使用上传证书获取的证书 ID
+
+                        # # 发送请求并获取响应
+                        # deploy_response = client.do_action_with_exception(deploy_request)
+
+                        # # 打印响应
+                        # print(deploy_response)
 
                         # 设置请求参数
                         # request = UploadServerCertificateRequest.UploadServerCertificateRequest()
@@ -308,16 +327,16 @@ jobs:
 
                     try:
                         # 更新cdn1证书
-                        response = requests.get(url, params=params1, headers=headers, timeout=60)
-                        response.raise_for_status()  # 非2xx状态码抛出异常
-                        print(f"连接成功！状态码: {response.status_code}")
-                        print(response.json())
+                        response_url1 = requests.get(url, params=params1, headers=headers, timeout=60)
+                        response_url1.raise_for_status()  # 非2xx状态码抛出异常
+                        print(f"连接成功！状态码: {response_url1.status_code}")
+                        print(response_url1.json())
 
                         # 更新cdn2证书
-                        response = requests.get(url2, params=params2, headers=headers, timeout=60)
-                        response.raise_for_status()  # 非2xx状态码抛出异常
-                        print(f"连接成功！状态码: {response.status_code}")
-                        print(response.json())
+                        response_url2 = requests.get(url2, params=params2, headers=headers, timeout=60)
+                        response_url2.raise_for_status()  # 非2xx状态码抛出异常
+                        print(f"连接成功！状态码: {response_url2.status_code}")
+                        print(response_url2.json())
                     except Exception as e:
                         print(f"连接失败: {str(e)}")
                         raise  # 使步骤失败
