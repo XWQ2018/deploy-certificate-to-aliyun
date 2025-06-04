@@ -183,7 +183,9 @@ jobs:
                         request.add_query_param('Domain', domainName)  # 你的域名
                         request.add_query_param('Cert', cert_pem)  # 你的证书内容（PEM 格式）
                         request.add_query_param('Key', key_pem)  # 你的私钥内容（PEM 格式）
-                        request.add_query_param('Name', "certificate-{domainName}")  # 证书名称
+                        # 使用 f-string 进行字符串格式化
+                        certificate_name = f"certificate-{domainName}"
+                        request.add_query_param('Name', certificate_name)  # 证书名称
                         request.add_query_param('SslVersion', 'TLSv1.2')  # SSL 版本
 
                         # 发送请求并获取响应
