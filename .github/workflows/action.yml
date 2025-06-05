@@ -301,7 +301,7 @@ jobs:
                     certcontent_single_line2 = json.dumps(cert1)
 
                     # # json.dumps() 会包含引号，我们可以去掉它们
-                    certcontent_single_line2 = certcontent_single_line[1:-1]
+                    certcontent_single_line2 = certcontent_single_line2[1:-1]
 
                     print("---------------json.dumps转换---------------------")
                     print(certcontent_single_line2)
