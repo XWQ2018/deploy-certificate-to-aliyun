@@ -298,13 +298,15 @@ jobs:
                         key1 = f.read()
 
                     # 打印读取的内容
+                    # print(cert1)
+                    # print(key1)
+                    
+                    # 将换行符替换为 \n 并将整个字符串转换为一个单行字符串
+                    cert1 = cert1.replace('\n', '\\n')
+                    key1 = key1.replace('\n', '\\n')
+                    # 打印转换后的字符串
                     print(cert1)
                     print(key1)
-                    # 将换行符替换为 \n 并将整个字符串转换为一个单行字符串
-                    certcontent_single_line = cert1.replace('\n', '\\n')
-
-                    # 打印转换后的字符串
-                    print(certcontent_single_line)
 
                     # # 使用 json.dumps() 函数
                     # certcontent_single_line2 = json.dumps(cert1)
@@ -337,7 +339,6 @@ jobs:
                     url2= get_env_var('REQUEST_URL2')
 
                     headers = {
-                        # "Accept": "*/*",
                         # "User-Agent": "GitHub-Actions",
                         'User-Agent': 'Mozilla/5.0',
                         'Accept': 'application/json',
@@ -348,8 +349,8 @@ jobs:
                     }
 
                     params1 = {
-                        "cert_content": certcontent_single_line,  # 证书内容
-                        "key_content": certcontent_single_line       # 私匙内容
+                        "cert_content": cert1,  # 证书内容
+                        "key_content": key1       # 私匙内容
                     }
 
                     params2 = {
@@ -365,7 +366,7 @@ jobs:
                         print(response_url1.json())
 
                         # 更新cdn2证书
-                        # response_url2 = requests.post(url2, params=params2, headers=headers, timeout=600)
+                        # response_url2 = requests.post(url2, json=params2, headers=headers, timeout=600)
                         # response_url2.raise_for_status()  # 非2xx状态码抛出异常
                         # print(f"连接成功！状态码: {response_url2.status_code}")
                         # print(response_url2.json())
