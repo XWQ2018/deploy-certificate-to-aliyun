@@ -263,6 +263,7 @@ jobs:
                   cat << 'EOF' > update_cert_api.py
                   import requests
                   import os
+                  import json
 
                   def get_env_var(key):
                     value = os.getenv(key)
@@ -300,10 +301,18 @@ jobs:
                     print(cert1)
                     print(key1)
                     # 将换行符替换为 \n 并将整个字符串转换为一个单行字符串
-                    certcontent_single_line = cert1.replace('\n', '\\n').replace('\\n', '')
+                    certcontent_single_line = cert1.replace('\n', '\\n')
 
                     # 打印转换后的字符串
-                    print(f"转换格式=====: {certcontent_single_line}")
+                    print(f"replace转换格式=====: {certcontent_single_line}")
+
+                    # 使用 json.dumps() 函数
+                    certcontent_single_line2 = json.dumps(cert1)
+
+                    # json.dumps() 会包含引号，我们可以去掉它们
+                    certcontent_single_line2 = certcontent_single_line[1:-1]
+
+                    print(f"json转换格式=====: {certcontent_single_line2}")
                     
                     # cert_path2 = f"~/certs/{get_env_var('CDN2')}/fullchain.pem"
                     # key_path2 = f"~/certs/{get_env_var('CDN2')}/privkey.pem"
@@ -330,15 +339,16 @@ jobs:
                     headers = {
                         "Accept": "*/*",
                         "User-Agent": "GitHub-Actions",
+                        # "User-Agent": "*",
                         # "Content-Type": "mutipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"
                         "Content-Type":"application/x-www-form-urlencoded"
                     }
 
                     # 使用 repr() 获取带有转义字符的字符串
-                    cert1 = repr(cert1)
-                    key1 = repr(key1)
-                    cert2 = repr(cert2)
-                    key2 = repr(key2)
+                    # cert1 = repr(cert1)
+                    # key1 = repr(key1)
+                    # cert2 = repr(cert2)
+                    # key2 = repr(key2)
 
                     # 将换行符替换为 \n
                     certcontent_with_escaped_newlines = cert1.replace('\n', '\\n')
@@ -350,13 +360,13 @@ jobs:
                     print(certcontent_single_line)
 
                     # 去掉开头和结尾的引号
-                    cert1 = cert1[1:-1]
-                    key1 = key1[1:-1]
-                    cert2 = cert2[1:-1]
-                    key2 = key2[1:-1]
+                    # cert1 = cert1[1:-1]
+                    # key1 = key1[1:-1]
+                    # cert2 = cert2[1:-1]
+                    # key2 = key2[1:-1]
 
-                    print(f"cert1转成单行字符串: {cert1}")
-                    print(f"key1转成单行字符串: {key1}")
+                    # print(f"cert1转成单行字符串: {cert1}")
+                    # print(f"key1转成单行字符串: {key1}")
 
                     params1 = {
                         "cert_content": cert1,  # 证书内容
@@ -376,10 +386,10 @@ jobs:
                         print(response_url1.json())
 
                         # 更新cdn2证书
-                        response_url2 = requests.post(url2, params=params2, headers=headers, timeout=3600)
-                        response_url2.raise_for_status()  # 非2xx状态码抛出异常
-                        print(f"连接成功！状态码: {response_url2.status_code}")
-                        print(response_url2.json())
+                        # response_url2 = requests.post(url2, params=params2, headers=headers, timeout=3600)
+                        # response_url2.raise_for_status()  # 非2xx状态码抛出异常
+                        # print(f"连接成功！状态码: {response_url2.status_code}")
+                        # print(response_url2.json())
                     except Exception as e:
                         print(f"连接失败: {str(e)}")
                         raise  # 使步骤失败
