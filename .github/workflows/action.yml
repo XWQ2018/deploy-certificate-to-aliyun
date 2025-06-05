@@ -341,9 +341,9 @@ jobs:
                         # "User-Agent": "GitHub-Actions",
                         'User-Agent': 'Mozilla/5.0',
                         'Accept': 'application/json',
-                        'Connection': 'keep-alive'
-                        "Content-Type": "mutipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"
-                        # "Content-Type":"application/json"
+                        'Connection': 'keep-alive',
+                        "Content-Type":"application/json",
+                        # "Content-Type": "mutipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW",
                         # "Content-Type":"application/x-www-form-urlencoded"
                     }
 
