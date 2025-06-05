@@ -357,7 +357,7 @@ jobs:
                     certcontent_single_line = certcontent_with_escaped_newlines.replace('\n', '')
 
                     # 打印转换后的字符串
-                    print(certcontent_single_line)
+                    # print(certcontent_single_line)
 
                     # 去掉开头和结尾的引号
                     # cert1 = cert1[1:-1]
@@ -369,8 +369,8 @@ jobs:
                     # print(f"key1转成单行字符串: {key1}")
 
                     params1 = {
-                        "cert_content": certcontent_single_line2,  # 证书内容
-                        "key_content": certcontent_single_line2       # 私匙内容
+                        "cert_content": "fhahfoahof44646",  # 证书内容
+                        "key_content": "hfahfoahof446112158"       # 私匙内容
                     }
 
                     params2 = {
