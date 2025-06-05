@@ -297,17 +297,6 @@ jobs:
                     with open(expanded_key_path1, 'r') as f:
                         key1 = f.read()
 
-                    # 打印读取的内容
-                    # print(cert1)
-                    # print(key1)
-                    
-                    # 将换行符替换为 \n 并将整个字符串转换为一个单行字符串
-                    cert1 = cert1.replace('\n', '\\n')
-                    key1 = key1.replace('\n', '\\n')
-                    # 打印转换后的字符串
-                    print(cert1)
-                    print(key1)
-
                     # # 使用 json.dumps() 函数
                     # certcontent_single_line2 = json.dumps(cert1)
 
@@ -348,6 +337,16 @@ jobs:
                         # "Content-Type":"application/x-www-form-urlencoded"
                     }
 
+
+                    # 将换行符替换为 \n 并将整个字符串转换为一个单行字符串
+                    cert1 = cert1.replace('\n', '\\n')
+                    key1 = key1.replace('\n', '\\n')
+                    cert2 = cert2.replace('\n', '\\n')
+                    key2 = key2.replace('\n', '\\n')
+                    # 打印转换后的字符串
+                    print(cert1)
+                    print(key1)
+
                     params1 = {
                         "cert_content": cert1,  # 证书内容
                         "key_content": key1       # 私匙内容
@@ -366,10 +365,10 @@ jobs:
                         print(response_url1.json())
 
                         # 更新cdn2证书
-                        # response_url2 = requests.post(url2, json=params2, headers=headers, timeout=600)
-                        # response_url2.raise_for_status()  # 非2xx状态码抛出异常
-                        # print(f"连接成功！状态码: {response_url2.status_code}")
-                        # print(response_url2.json())
+                        response_url2 = requests.post(url2, json=params2, headers=headers, timeout=600)
+                        response_url2.raise_for_status()  # 非2xx状态码抛出异常
+                        print(f"连接成功！状态码: {response_url2.status_code}")
+                        print(response_url2.json())
                     except Exception as e:
                         print(f"连接失败: {str(e)}")
                         raise  # 使步骤失败
