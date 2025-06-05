@@ -318,6 +318,21 @@ jobs:
                         "Content-Type": "mutipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"
                     }
 
+                    # 使用 repr() 获取带有转义字符的字符串
+                    cert1 = repr(cert1)
+                    key1 = repr(key1)
+                    cert2 = repr(cert2)
+                    key2 = repr(key2)
+
+                    # 去掉开头和结尾的引号
+                    cert1 = cert1[1:-1]
+                    key1 = key1[1:-1]
+                    cert2 = cert2[1:-1]
+                    key2 = key2[1:-1]
+
+                    print(f"cert1转成单行字符串: {cert1}")
+                    print(f"key1转成单行字符串: {key1}")
+
                     params1 = {
                         "cert_content": cert1,  # 证书内容
                         "key_content": key1       # 私匙内容
@@ -330,13 +345,13 @@ jobs:
 
                     try:
                         # 更新cdn1证书
-                        response_url1 = requests.get(url, params=params1, headers=headers, timeout=360)
+                        response_url1 = requests.post(url, params=params1, headers=headers, timeout=360)
                         response_url1.raise_for_status()  # 非2xx状态码抛出异常
                         print(f"连接成功！状态码: {response_url1.status_code}")
                         print(response_url1.json())
 
                         # 更新cdn2证书
-                        response_url2 = requests.get(url2, params=params2, headers=headers, timeout=360)
+                        response_url2 = requests.post(url2, params=params2, headers=headers, timeout=360)
                         response_url2.raise_for_status()  # 非2xx状态码抛出异常
                         print(f"连接成功！状态码: {response_url2.status_code}")
                         print(response_url2.json())
