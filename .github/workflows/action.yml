@@ -298,12 +298,13 @@ jobs:
                         key1 = f.read()
 
                     # # 使用 json.dumps() 函数
-                    # certcontent_single_line2 = json.dumps(cert1)
+                    certcontent_single_line2 = json.dumps(cert1)
 
                     # # json.dumps() 会包含引号，我们可以去掉它们
-                    # certcontent_single_line2 = certcontent_single_line[1:-1]
+                    certcontent_single_line2 = certcontent_single_line[1:-1]
 
-                    # print(certcontent_single_line2)
+                    print("---------------json.dumps转换---------------------")
+                    print(certcontent_single_line2)
                     
                     # cert_path2 = f"~/certs/{get_env_var('CDN2')}/fullchain.pem"
                     # key_path2 = f"~/certs/{get_env_var('CDN2')}/privkey.pem"
@@ -344,6 +345,7 @@ jobs:
                     cert2 = cert2.replace('\n', '\\n')
                     key2 = key2.replace('\n', '\\n')
                     # 打印转换后的字符串
+                    print("-----------------------分割线--------------")
                     print(cert1)
                     print(key1)
 
