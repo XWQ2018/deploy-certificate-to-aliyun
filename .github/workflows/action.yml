@@ -94,6 +94,7 @@ jobs:
                   cat << 'EOF' > update_sslcert_api.py
                   import os
                   import json
+                  import random
                   from aliyunsdkcore.client import AcsClient
                   from aliyunsdkcore.acs_exception.exceptions import ServerException
                   from aliyunsdkcore.acs_exception.exceptions import ClientException
