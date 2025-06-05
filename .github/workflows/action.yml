@@ -184,7 +184,9 @@ jobs:
                         request.add_query_param('Cert', cert_pem)  # 你的证书内容（PEM 格式）
                         request.add_query_param('Key', key_pem)  # 你的私钥内容（PEM 格式）
                         # 使用 f-string 进行字符串格式化
-                        certificate_name = f"certificate-{domainName}"
+                        # 生成一个随机数
+                        random_number = random.randint(1000, 9999)  # 生成一个4位的随机数
+                        certificate_name = f"certificate-{domainName}-{random_number}"
                         request.add_query_param('Name', certificate_name)  # 证书名称
                         request.add_query_param('SslVersion', 'TLSv1.2')  # SSL 版本
 
@@ -199,8 +201,8 @@ jobs:
 
                         print(f"证书已更新: {domainName}")
                         # 打印证书内容
-                        print(cert_pem)
-                        print(key_pem)
+                        # print(cert_pem)
+                        # print(key_pem)
                         print(f"证书ID: {certificate_id}")
                         print(f"响应内容: {response_json}")
 
