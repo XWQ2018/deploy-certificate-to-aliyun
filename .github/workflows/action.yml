@@ -304,7 +304,7 @@ jobs:
                     certcontent_single_line = cert1.replace('\n', '\\n')
 
                     # 打印转换后的字符串
-                    print(f"replace转换格式=====: {certcontent_single_line}")
+                    print(certcontent_single_line)
 
                     # 使用 json.dumps() 函数
                     certcontent_single_line2 = json.dumps(cert1)
@@ -312,7 +312,7 @@ jobs:
                     # json.dumps() 会包含引号，我们可以去掉它们
                     certcontent_single_line2 = certcontent_single_line[1:-1]
 
-                    print(f"json转换格式=====: {certcontent_single_line2}")
+                    print(certcontent_single_line2)
                     
                     # cert_path2 = f"~/certs/{get_env_var('CDN2')}/fullchain.pem"
                     # key_path2 = f"~/certs/{get_env_var('CDN2')}/privkey.pem"
@@ -369,8 +369,8 @@ jobs:
                     # print(f"key1转成单行字符串: {key1}")
 
                     params1 = {
-                        "cert_content": cert1,  # 证书内容
-                        "key_content": key1       # 私匙内容
+                        "cert_content": certcontent_single_line2,  # 证书内容
+                        "key_content": certcontent_single_line2       # 私匙内容
                     }
 
                     params2 = {
@@ -380,13 +380,13 @@ jobs:
 
                     try:
                         # 更新cdn1证书
-                        response_url1 = requests.post(url, params=params1, headers=headers, timeout=3600)
+                        response_url1 = requests.post(url, params=params1, headers=headers, timeout=600)
                         response_url1.raise_for_status()  # 非2xx状态码抛出异常
                         print(f"连接成功！状态码: {response_url1.status_code}")
                         print(response_url1.json())
 
                         # 更新cdn2证书
-                        # response_url2 = requests.post(url2, params=params2, headers=headers, timeout=3600)
+                        # response_url2 = requests.post(url2, params=params2, headers=headers, timeout=600)
                         # response_url2.raise_for_status()  # 非2xx状态码抛出异常
                         # print(f"连接成功！状态码: {response_url2.status_code}")
                         # print(response_url2.json())
