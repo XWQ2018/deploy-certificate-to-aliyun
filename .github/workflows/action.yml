@@ -340,10 +340,10 @@ jobs:
 
 
                     # 将换行符替换为 \n 并将整个字符串转换为一个单行字符串
-                    cert1 = cert1.replace('\n', '\\n')
-                    key1 = key1.replace('\n', '\\n')
-                    cert2 = cert2.replace('\n', '\\n')
-                    key2 = key2.replace('\n', '\\n')
+                    # cert1 = cert1.replace('\n', '\\n')
+                    # key1 = key1.replace('\n', '\\n')
+                    # cert2 = cert2.replace('\n', '\\n')
+                    # key2 = key2.replace('\n', '\\n')
                     # 打印转换后的字符串
                     print("-----------------------分割线--------------")
                     print(cert1)
