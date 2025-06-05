@@ -299,6 +299,11 @@ jobs:
                     # 打印读取的内容
                     print(cert1)
                     print(key1)
+                    # 将换行符替换为 \n 并将整个字符串转换为一个单行字符串
+                    certcontent_single_line = cert1.replace('\n', '\\n').replace('\\n', '')
+
+                    # 打印转换后的字符串
+                    print(f"转换格式=====: {certcontent_single_line}")
                     
                     # cert_path2 = f"~/certs/{get_env_var('CDN2')}/fullchain.pem"
                     # key_path2 = f"~/certs/{get_env_var('CDN2')}/privkey.pem"
@@ -325,7 +330,8 @@ jobs:
                     headers = {
                         "Accept": "*/*",
                         "User-Agent": "GitHub-Actions",
-                        "Content-Type": "mutipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"
+                        # "Content-Type": "mutipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"
+                        "Content-Type":"application/x-www-form-urlencoded"
                     }
 
                     # 使用 repr() 获取带有转义字符的字符串
@@ -364,13 +370,13 @@ jobs:
 
                     try:
                         # 更新cdn1证书
-                        response_url1 = requests.post(url, params=params1, headers=headers, timeout=360)
+                        response_url1 = requests.post(url, params=params1, headers=headers, timeout=3600)
                         response_url1.raise_for_status()  # 非2xx状态码抛出异常
                         print(f"连接成功！状态码: {response_url1.status_code}")
                         print(response_url1.json())
 
                         # 更新cdn2证书
-                        response_url2 = requests.post(url2, params=params2, headers=headers, timeout=360)
+                        response_url2 = requests.post(url2, params=params2, headers=headers, timeout=3600)
                         response_url2.raise_for_status()  # 非2xx状态码抛出异常
                         print(f"连接成功！状态码: {response_url2.status_code}")
                         print(response_url2.json())
