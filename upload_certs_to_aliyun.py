@@ -58,7 +58,7 @@ def main():
     if not first_domain:
         raise ValueError("DOMAINS 环境变量未包含有效域名")
     
-    print(f"使用的第一个域名：{first_domain}")
+    print(f"使用的第一个域名==：{first_domain}")
 
     # 所有CDN域名共用同一个证书
     for i,cdn_domain in enumerate(cdn_domains):
