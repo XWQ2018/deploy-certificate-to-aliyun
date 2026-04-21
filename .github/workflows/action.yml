@@ -6,7 +6,7 @@ on:
             - main
     schedule:
         - cron: "0 0 20 */2 *" # 每2个月的第二十天执行一次
-
+    workflow_dispatch:
 jobs:
     renew-deploy-cert:
         runs-on: ubuntu-latest

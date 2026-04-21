@@ -20,4 +20,4 @@ GitHub 仓库的 "Settings" -> "Secrets and variables" -> "Actions" 中添加以
 >
 > - 设置CDN证书：https://next.api.aliyun.com/document/Cdn/2018-05-10/SetCdnDomainSSLCertificate
 
-## 更新0421
+## 更新20260421
